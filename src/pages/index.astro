@@ -1,53 +1,65 @@
 ---
-import { getLatestReport, getAllReports } from '../utils/reports';
-import Layout from '../layouts/Layout.astro';
+import { getLatestReport, getAllReports } from "../utils/reports";
+import Layout from "../layouts/Layout.astro";
 
 const latestReport = getLatestReport();
 const allReports = getAllReports();
-
-// Rediriger vers le dernier rapport si disponible
-if (latestReport) {
-  return Astro.redirect(`/${latestReport.date}`);
-}
-
-// Sinon, afficher une liste de tous les rapports
+const latestDate = latestReport?.date;
 ---
 
 <Layout title="Crypto Daily Reports">
-  <div class="wrap">
-    <div class="hero">
-      <h1 class="h1">Crypto Daily Reports</h1>
-      <p class="summary">Rapports quotidiens du marché crypto</p>
-    </div>
+  {latestReport && latestDate ? (
+    <>
+      <script define:vars={{ latestDate }}>
+        // Redirection côté client pour les builds statiques
+        window.location.replace(`/${latestDate}`);
+      </script>
+      <div class="wrap">
+        <div class="redirect-message">
+          <p>Redirection vers le dernier rapport...</p>
+          <p>
+            Si la redirection ne fonctionne pas,{" "}
+            <a href={`/${latestDate}`}>cliquez ici</a>.
+          </p>
+        </div>
+      </div>
+    </>
+  ) : (
+    <div class="wrap">
+      <div class="hero">
+        <h1 class="h1">Crypto Daily Reports</h1>
+        <p class="summary">Rapports quotidiens du marché crypto</p>
+      </div>
 
-    {allReports.length > 0 ? (
-      <div class="reports-list">
-        <h2 class="h2">Tous les rapports</h2>
-        <ul class="reports-grid">
-          {allReports.map((report) => {
-            const dateObj = new Date(report.date + 'T00:00:00');
-            const formattedDate = dateObj.toLocaleDateString('fr-FR', {
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric',
-            });
-            return (
-              <li class="report-item">
-                <a href={`/${report.date}`} class="report-link">
-                  <div class="report-date">{formattedDate}</div>
-                  <div class="report-filename">{report.filename}</div>
-                </a>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    ) : (
-      <div class="no-reports">
-        <p>Aucun rapport disponible.</p>
-      </div>
-    )}
-  </div>
+      {allReports.length > 0 ? (
+        <div class="reports-list">
+          <h2 class="h2">Tous les rapports</h2>
+          <ul class="reports-grid">
+            {allReports.map((report) => {
+              const dateObj = new Date(report.date + "T00:00:00");
+              const formattedDate = dateObj.toLocaleDateString("fr-FR", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              });
+              return (
+                <li class="report-item">
+                  <a href={`/${report.date}`} class="report-link">
+                    <div class="report-date">{formattedDate}</div>
+                    <div class="report-filename">{report.filename}</div>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ) : (
+        <div class="no-reports">
+          <p>Aucun rapport disponible.</p>
+        </div>
+      )}
+    </div>
+  )}
 </Layout>
 
 <style>
@@ -115,5 +127,16 @@ if (latestReport) {
     text-align: center;
     padding: 60px 20px;
     color: var(--dim);
+  }
+
+  .redirect-message {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text);
+  }
+
+  .redirect-message a {
+    color: var(--accent);
+    text-decoration: underline;
   }
 </style>
