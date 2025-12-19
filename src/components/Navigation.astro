@@ -1,0 +1,103 @@
+---
+import { getPreviousReport, getNextReport } from "../utils/reports";
+
+interface Props {
+  currentDate: string;
+}
+
+const { currentDate } = Astro.props;
+
+const previousReport = getPreviousReport(currentDate);
+const nextReport = getNextReport(currentDate);
+
+// Formater la date pour l'affichage
+const dateObj = new Date(currentDate + "T00:00:00");
+const formattedDate = dateObj.toLocaleDateString("fr-FR", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+---
+
+<nav class="report-nav">
+  <div class="nav-links">
+    {
+      previousReport ? (
+        <a href={`/${previousReport.date}`} class="nav-link prev">
+          ← {previousReport.date}
+        </a>
+      ) : (
+        <span class="nav-link disabled">← Plus ancien</span>
+      )
+    }
+    <a href="/" class="nav-link home">Accueil</a>
+    {
+      nextReport ? (
+        <a href={`/${nextReport.date}`} class="nav-link next">
+          {nextReport.date} →
+        </a>
+      ) : (
+        <span class="nav-link disabled">Plus récent →</span>
+      )
+    }
+  </div>
+  <div class="nav-date">
+    Rapport du {formattedDate}
+  </div>
+</nav>
+
+<style>
+  .report-nav {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .nav-link {
+    padding: 8px 16px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #444444;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+
+  .nav-link:hover {
+    background: #1f1f1f;
+    color: white;
+    border-color: #b8b8b8;
+  }
+
+  .nav-link.disabled {
+    color: #72777e;
+    cursor: not-allowed;
+    background: #f3f4f6;
+  }
+
+  .nav-link.home {
+    font-weight: 700;
+  }
+
+  .nav-date {
+    color: #25272c;
+    font-size: 14px;
+    font-weight: 500;
+  }
+</style>

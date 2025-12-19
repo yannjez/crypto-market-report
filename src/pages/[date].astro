@@ -1,0 +1,35 @@
+---
+import { getReportByDate, getAllReports } from "../utils/reports";
+import { extractBodyContent, extractTitle } from "../utils/htmlParser";
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+
+export async function getStaticPaths() {
+  const reports = getAllReports();
+  return reports.map((report) => ({
+    params: { date: report.date },
+    props: { report },
+  }));
+}
+
+const { report } = Astro.props;
+const { date } = Astro.params;
+
+if (!report || !date) {
+  return Astro.redirect("/");
+}
+
+const bodyContent = extractBodyContent(report.content);
+const title = extractTitle(report.content);
+---
+
+<Layout title={title}>
+  <Navigation currentDate={date} />
+  <div class="report-content" set:html={bodyContent} />
+</Layout>
+
+<style>
+  .report-content {
+    width: 100%;
+  }
+</style>

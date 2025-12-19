@@ -1,0 +1,119 @@
+---
+import { getLatestReport, getAllReports } from '../utils/reports';
+import Layout from '../layouts/Layout.astro';
+
+const latestReport = getLatestReport();
+const allReports = getAllReports();
+
+// Rediriger vers le dernier rapport si disponible
+if (latestReport) {
+  return Astro.redirect(`/${latestReport.date}`);
+}
+
+// Sinon, afficher une liste de tous les rapports
+---
+
+<Layout title="Crypto Daily Reports">
+  <div class="wrap">
+    <div class="hero">
+      <h1 class="h1">Crypto Daily Reports</h1>
+      <p class="summary">Rapports quotidiens du marché crypto</p>
+    </div>
+
+    {allReports.length > 0 ? (
+      <div class="reports-list">
+        <h2 class="h2">Tous les rapports</h2>
+        <ul class="reports-grid">
+          {allReports.map((report) => {
+            const dateObj = new Date(report.date + 'T00:00:00');
+            const formattedDate = dateObj.toLocaleDateString('fr-FR', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            });
+            return (
+              <li class="report-item">
+                <a href={`/${report.date}`} class="report-link">
+                  <div class="report-date">{formattedDate}</div>
+                  <div class="report-filename">{report.filename}</div>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    ) : (
+      <div class="no-reports">
+        <p>Aucun rapport disponible.</p>
+      </div>
+    )}
+  </div>
+</Layout>
+
+<style>
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 16px 60px;
+  }
+
+  .hero {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .reports-list {
+    margin-top: 32px;
+  }
+
+  .reports-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .report-item {
+    margin: 0;
+  }
+
+  .report-link {
+    display: block;
+    padding: 20px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  }
+
+  .report-link:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .report-date {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 8px;
+  }
+
+  .report-filename {
+    font-size: 13px;
+    color: var(--dim);
+    font-family: monospace;
+  }
+
+  .no-reports {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--dim);
+  }
+</style>
