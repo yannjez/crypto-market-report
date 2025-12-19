@@ -8,58 +8,60 @@ const latestDate = latestReport?.date;
 ---
 
 <Layout title="Crypto Daily Reports">
-  {latestReport && latestDate ? (
-    <>
-      <script define:vars={{ latestDate }}>
-        // Redirection côté client pour les builds statiques
-        window.location.replace(`/${latestDate}`);
-      </script>
+  {
+    latestReport && latestDate ? (
+      <>
+        <script define:vars={{ latestDate }}>
+          // Redirection côté client pour les builds statiques
+          window.location.replace(`/${latestDate}`);
+        </script>
+        <div class="wrap">
+          <div class="redirect-message">
+            <p>Redirection vers le dernier rapport...</p>
+            <p>
+              Si la redirection ne fonctionne pas,{" "}
+              <a href={`/${latestDate}`}>cliquez ici</a>.
+            </p>
+          </div>
+        </div>
+      </>
+    ) : (
       <div class="wrap">
-        <div class="redirect-message">
-          <p>Redirection vers le dernier rapport...</p>
-          <p>
-            Si la redirection ne fonctionne pas,{" "}
-            <a href={`/${latestDate}`}>cliquez ici</a>.
-          </p>
+        <div class="hero">
+          <h1 class="h1">Crypto Daily Reports</h1>
+          <p class="summary">Rapports quotidiens du marché crypto</p>
         </div>
-      </div>
-    </>
-  ) : (
-    <div class="wrap">
-      <div class="hero">
-        <h1 class="h1">Crypto Daily Reports</h1>
-        <p class="summary">Rapports quotidiens du marché crypto</p>
-      </div>
 
-      {allReports.length > 0 ? (
-        <div class="reports-list">
-          <h2 class="h2">Tous les rapports</h2>
-          <ul class="reports-grid">
-            {allReports.map((report) => {
-              const dateObj = new Date(report.date + "T00:00:00");
-              const formattedDate = dateObj.toLocaleDateString("fr-FR", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              });
-              return (
-                <li class="report-item">
-                  <a href={`/${report.date}`} class="report-link">
-                    <div class="report-date">{formattedDate}</div>
-                    <div class="report-filename">{report.filename}</div>
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      ) : (
-        <div class="no-reports">
-          <p>Aucun rapport disponible.</p>
-        </div>
-      )}
-    </div>
-  )}
+        {allReports.length > 0 ? (
+          <div class="reports-list">
+            <h2 class="h2">Tous les rapports</h2>
+            <ul class="reports-grid">
+              {allReports.map((report) => {
+                const dateObj = new Date(report.date + "T00:00:00");
+                const formattedDate = dateObj.toLocaleDateString("fr-FR", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                });
+                return (
+                  <li class="report-item">
+                    <a href={`/${report.date}`} class="report-link">
+                      <div class="report-date">{formattedDate}</div>
+                      <div class="report-filename">{report.filename}</div>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ) : (
+          <div class="no-reports">
+            <p>Aucun rapport disponible.</p>
+          </div>
+        )}
+      </div>
+    )
+  }
 </Layout>
 
 <style>
@@ -101,7 +103,7 @@ const latestDate = latestReport?.date;
     text-decoration: none;
     color: var(--text);
     transition: all 0.2s;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
   }
 
   .report-link:hover {

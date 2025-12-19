@@ -20,20 +20,22 @@ const title = report ? extractTitle(report.content) : "Rapport introuvable";
 ---
 
 <Layout title={title}>
-  {report && date ? (
-    <>
-      <Navigation currentDate={date} />
-      <div class="report-content" set:html={bodyContent} />
-    </>
-  ) : (
-    <div class="wrap">
-      <div class="error-message">
-        <h1>Rapport introuvable</h1>
-        <p>Le rapport demandé n'existe pas.</p>
-        <a href="/">Retour à l'accueil</a>
+  {
+    report && date ? (
+      <>
+        <Navigation currentDate={date} />
+        <div class="report-content" set:html={bodyContent} />
+      </>
+    ) : (
+      <div class="wrap">
+        <div class="error-message">
+          <h1>Rapport introuvable</h1>
+          <p>Le rapport demandé n'existe pas.</p>
+          <a href="/">Retour à l'accueil</a>
+        </div>
       </div>
-    </div>
-  )}
+    )
+  }
 </Layout>
 
 <style>
